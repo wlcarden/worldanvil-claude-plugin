@@ -4,7 +4,8 @@
       "command": "node",
       "args": ["${CLAUDE_PLUGIN_ROOT}/worldanvil-mcp/index.js"],
       "env": {
-        "WORLD_ANVIL_AUTH_TOKEN": "${WORLD_ANVIL_AUTH_TOKEN}"
+        "WA_APP_KEY": "${WA_APP_KEY}",
+        "WA_AUTH_TOKEN": "${WA_AUTH_TOKEN}"
       }
     }
   }
