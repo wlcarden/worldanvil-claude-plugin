@@ -1,0 +1,13 @@
+{
+  "name": "worldanvil-claude-plugin",
+  "description": "Claude Code plugins for WorldAnvil worldbuilding platform",
+  "version": "1.0.0",
+  "author": {
+    "name": "Leighton Carden",
+    "url": "https://github.com/wlcarden"
+  },
+  "repository": "https://github.com/wlcarden/worldanvil-claude-plugin",
+  "plugins": [
+    "plugins/worldbuilding"
+  ]
+}
