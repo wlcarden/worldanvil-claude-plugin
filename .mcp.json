@@ -5,7 +5,8 @@
       "args": ["${CLAUDE_PLUGIN_ROOT}/worldanvil-mcp/index.js"],
       "env": {
         "WA_APP_KEY": "${WA_APP_KEY}",
-        "WA_AUTH_TOKEN": "${WA_AUTH_TOKEN}"
+        "WA_AUTH_TOKEN": "${WA_AUTH_TOKEN}",
+        "WA_PROXY_URL": "${WA_PROXY_URL}"
       }
     }
   }

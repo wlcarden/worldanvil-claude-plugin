@@ -1,0 +1,18 @@
+# WorldAnvil API Proxy Worker Configuration
+#
+# To deploy:
+#   1. Install wrangler: npm install -g wrangler
+#   2. Login to Cloudflare: wrangler login
+#   3. Update 'name' below to your preferred worker name
+#   4. Deploy: wrangler deploy
+#   5. Add your App Key secret: wrangler secret put WA_APP_KEY
+#
+# Your worker will be available at: https://<name>.<your-subdomain>.workers.dev
+
+name = "worldanvil-proxy"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+# Uncomment to enable logging (useful for debugging)
+# [observability]
+# enabled = true

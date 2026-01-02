@@ -9,30 +9,73 @@ import https from 'https';
 // Configuration defaults
 const DEFAULT_API_BASE = 'www.worldanvil.com';
 const DEFAULT_API_PATH = '/api/external/boromir';
+const DEFAULT_PROXY_URL = 'https://worldanvil-proxy.wlcarden.workers.dev';
 
 /**
  * World Anvil API Client
  *
  * Provides methods for all World Anvil Boromir API endpoints.
+ * Supports two modes:
+ *   - Direct mode: Uses appKey + authToken to call WorldAnvil directly
+ *   - Proxy mode: Uses proxyUrl + authToken, proxy injects appKey
  */
 export class WorldAnvilClient {
   /**
    * Create a new World Anvil API client
    *
    * @param {Object} config - Client configuration
-   * @param {string} config.appKey - World Anvil Application Key
-   * @param {string} config.authToken - World Anvil User Authentication Token
-   * @param {string} [config.apiBase] - API hostname (default: www.worldanvil.com)
-   * @param {string} [config.apiPath] - API path prefix (default: /api/external/boromir)
+   * @param {string} [config.appKey] - World Anvil Application Key (optional if using proxyUrl)
+   * @param {string} config.authToken - World Anvil User Authentication Token (always required)
+   * @param {string} [config.proxyUrl] - Cloudflare Worker proxy URL (optional, used if appKey not provided)
+   * @param {string} [config.apiBase] - API hostname (default: www.worldanvil.com, auto-set in proxy mode)
+   * @param {string} [config.apiPath] - API path prefix (default: /api/external/boromir, empty in proxy mode)
    */
   constructor(config = {}) {
-    this.appKey = config.appKey || process.env.WA_APP_KEY;
     this.authToken = config.authToken || process.env.WA_AUTH_TOKEN;
-    this.apiBase = config.apiBase || DEFAULT_API_BASE;
-    this.apiPath = config.apiPath || DEFAULT_API_PATH;
 
-    if (!this.appKey || !this.authToken) {
-      throw new Error('WA_APP_KEY and WA_AUTH_TOKEN must be provided');
+    // Check for authToken first - always required
+    if (!this.authToken) {
+      throw new Error('WA_AUTH_TOKEN is required');
+    }
+
+    // Determine mode: direct (with appKey) or proxy (with proxyUrl)
+    const appKey = config.appKey || process.env.WA_APP_KEY;
+    const proxyUrl = config.proxyUrl || process.env.WA_PROXY_URL;
+
+    if (appKey) {
+      // Direct mode - use appKey, ignore proxyUrl if both provided
+      this.appKey = appKey;
+      this.proxyUrl = undefined;
+      this.apiBase = config.apiBase || DEFAULT_API_BASE;
+      this.apiPath = config.apiPath || DEFAULT_API_PATH;
+    } else if (proxyUrl) {
+      // Proxy mode - parse proxyUrl, proxy will inject appKey
+      this.appKey = undefined;
+      // Normalize URL: strip trailing slash
+      const normalizedUrl = proxyUrl.replace(/\/$/, '');
+      this.proxyUrl = normalizedUrl;
+
+      // Parse proxy URL to extract hostname
+      try {
+        const parsed = new URL(normalizedUrl);
+        this.apiBase = parsed.hostname;
+        // Proxy handles the /api/external/boromir path prefix
+        this.apiPath = '';
+        // Store protocol for request (http vs https)
+        this.useHttps = parsed.protocol === 'https:';
+      } catch (e) {
+        throw new Error(`Invalid WA_PROXY_URL: ${proxyUrl}`);
+      }
+    } else {
+      // Neither appKey nor custom proxyUrl - use default proxy
+      this.appKey = undefined;
+      this.proxyUrl = DEFAULT_PROXY_URL;
+
+      // Parse default proxy URL
+      const parsed = new URL(DEFAULT_PROXY_URL);
+      this.apiBase = parsed.hostname;
+      this.apiPath = '';
+      this.useHttps = parsed.protocol === 'https:';
     }
   }
 
@@ -48,16 +91,23 @@ export class WorldAnvilClient {
     return new Promise((resolve, reject) => {
       const postData = body ? JSON.stringify(body) : '';
 
+      // Build headers - only include x-application-key in direct mode
+      const headers = {
+        'x-auth-token': this.authToken,
+        'Accept': 'application/json',
+        'User-Agent': 'WorldAnvil-MCP/1.0'
+      };
+
+      // Only add app key header in direct mode (proxy injects it)
+      if (this.appKey) {
+        headers['x-application-key'] = this.appKey;
+      }
+
       const options = {
         hostname: this.apiBase,
         path: `${this.apiPath}${endpoint}`,
         method: method,
-        headers: {
-          'x-application-key': this.appKey,
-          'x-auth-token': this.authToken,
-          'Accept': 'application/json',
-          'User-Agent': 'WorldAnvil-MCP/1.0'
-        }
+        headers: headers
       };
 
       if (method === 'POST' || method === 'PUT' || method === 'PATCH') {

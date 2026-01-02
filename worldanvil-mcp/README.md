@@ -72,6 +72,67 @@ Add to your MCP configuration (`~/.claude/settings.json` or equivalent):
 
 The World Anvil tools will now be available!
 
+## Proxy Mode (No App Key Required)
+
+Don't have an Application Key? **No problem!** The MCP includes a default public proxy.
+
+### Simplest Setup (Just Auth Token)
+
+```json
+{
+  "mcpServers": {
+    "worldanvil": {
+      "command": "node",
+      "args": ["/path/to/worldanvil-mcp/index.js"],
+      "env": {
+        "WA_AUTH_TOKEN": "your-auth-token"
+      }
+    }
+  }
+}
+```
+
+That's it! The MCP automatically routes through the default proxy at `worldanvil-proxy.wlcarden.workers.dev`.
+
+### Using a Custom Proxy
+
+If you prefer to use your own proxy:
+
+```json
+{
+  "mcpServers": {
+    "worldanvil": {
+      "command": "node",
+      "args": ["/path/to/worldanvil-mcp/index.js"],
+      "env": {
+        "WA_AUTH_TOKEN": "your-auth-token",
+        "WA_PROXY_URL": "https://your-proxy.workers.dev"
+      }
+    }
+  }
+}
+```
+
+### For Proxy Operators (Sharing Your App Key)
+
+If you have an App Key and want to let others use the MCP:
+
+1. Deploy the Cloudflare Worker from `cloudflare-worker/`
+2. Add your App Key as a secret
+3. Share the Worker URL with users
+
+See [cloudflare-worker/README.md](./cloudflare-worker/README.md) for detailed setup instructions.
+
+### Mode Priority
+
+The MCP chooses its mode based on what's configured:
+
+| WA_APP_KEY | WA_PROXY_URL | Mode |
+|------------|--------------|------|
+| Set | Any | Direct (App Key used, proxy ignored) |
+| Not set | Set | Custom Proxy (routes through your Worker) |
+| Not set | Not set | Default Proxy (routes through `worldanvil-proxy.wlcarden.workers.dev`) |
+
 ## Available Tools
 
 ### Identity & Worlds
@@ -463,6 +524,14 @@ npm run dev           # Run with file watching
 - [MCP Protocol](https://modelcontextprotocol.io/)
 
 ## Changelog
+
+### v1.9.0
+- **Proxy Mode** - Use MCP without your own Application Key
+- **Default public proxy** - Just set `WA_AUTH_TOKEN` and it works!
+- Cloudflare Worker template for running your own proxy
+- `WA_PROXY_URL` environment variable for custom proxies
+- Direct mode remains default when `WA_APP_KEY` is set
+- Added 14 proxy-specific unit tests
 
 ### v1.8.0
 - Added BBCode Quick Reference to CLAUDE.md
