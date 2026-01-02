@@ -9,7 +9,7 @@ Works with **Claude Code**, **Cursor**, **Windsurf**, **Cline**, and any MCP-com
 ### Claude Code
 
 ```bash
-/install wlcarden/worldanvil-claude-plugin
+/install wlcarden/worldanvil-mcp
 ```
 
 Then set your auth token:
