@@ -1,8 +1,11 @@
 {
   "name": "worldanvil-mcp",
   "version": "1.9.0",
-  "description": "MCP server for World Anvil API integration with Claude Code",
+  "description": "MCP server for WorldAnvil API - works with Claude Code, Cursor, Windsurf, and any MCP-compatible AI tool",
   "main": "index.js",
+  "bin": {
+    "worldanvil-mcp": "./index.js"
+  },
   "type": "module",
   "scripts": {
     "start": "node index.js",
@@ -14,11 +17,31 @@
   "keywords": [
     "mcp",
     "worldanvil",
-    "claude-code",
-    "worldbuilding"
+    "worldbuilding",
+    "claude",
+    "cursor",
+    "ai",
+    "rpg",
+    "ttrpg",
+    "writing"
   ],
   "author": "Leighton Carden",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wlcarden/worldanvil-claude-plugin.git",
+    "directory": "plugins/worldbuilding/worldanvil-mcp"
+  },
+  "homepage": "https://github.com/wlcarden/worldanvil-claude-plugin#readme",
+  "bugs": {
+    "url": "https://github.com/wlcarden/worldanvil-claude-plugin/issues"
+  },
+  "files": [
+    "index.js",
+    "src/",
+    "CLAUDE.md",
+    "README.md"
+  ],
   "dependencies": {
     "@crit-fumble/worldanvil": "^3.1.0",
     "@modelcontextprotocol/sdk": "^1.0.4"

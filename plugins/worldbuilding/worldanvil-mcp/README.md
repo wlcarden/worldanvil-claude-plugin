@@ -1,6 +1,60 @@
 # World Anvil MCP Server
 
-MCP (Model Context Protocol) server for integrating World Anvil API with Claude Code. Provides 105 tools for complete worldbuilding automation.
+MCP (Model Context Protocol) server for integrating World Anvil with AI tools. Works with **Claude Code**, **Cursor**, **Windsurf**, **Cline**, and any MCP-compatible application.
+
+Provides 90+ tools for complete worldbuilding automation.
+
+## Installation
+
+### Via npm (Recommended)
+
+```bash
+npx worldanvil-mcp
+```
+
+Or install globally:
+
+```bash
+npm install -g worldanvil-mcp
+worldanvil-mcp
+```
+
+### Via Claude Code Plugin
+
+```bash
+/install wlcarden/worldanvil-claude-plugin
+```
+
+## Configuration
+
+### For Cursor / Windsurf / Other MCP Clients
+
+Add to your MCP configuration:
+
+```json
+{
+  "mcpServers": {
+    "worldanvil": {
+      "command": "npx",
+      "args": ["worldanvil-mcp"],
+      "env": {
+        "WA_AUTH_TOKEN": "your-auth-token"
+      }
+    }
+  }
+}
+```
+
+Get your Auth Token at: https://www.worldanvil.com/api/auth/key
+
+That's it! The MCP uses a public proxy so you don't need an Application Key.
+
+### For Claude Code
+
+After installing the plugin, just set:
+```bash
+export WA_AUTH_TOKEN="your-auth-token"
+```
 
 ## Features
 
