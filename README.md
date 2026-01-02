@@ -1,23 +1,57 @@
-# WorldAnvil Claude Code Plugin
+# WorldAnvil MCP
 
-A Claude Code plugin marketplace for [WorldAnvil](https://www.worldanvil.com/) - the worldbuilding platform for writers, game masters, and creators.
+MCP server for [WorldAnvil](https://www.worldanvil.com/) - the worldbuilding platform for writers, game masters, and creators.
+
+Works with **Claude Code**, **Cursor**, **Windsurf**, **Cline**, and any MCP-compatible AI tool.
 
 ## Installation
 
+### Claude Code
+
 ```bash
-# In Claude Code
 /install wlcarden/worldanvil-claude-plugin
+```
+
+Then set your auth token:
+```bash
+export WA_AUTH_TOKEN="your-auth-token"
+```
+
+### Cursor / Windsurf / Other MCP Clients
+
+Add to your MCP configuration:
+
+```json
+{
+  "mcpServers": {
+    "worldanvil": {
+      "command": "npx",
+      "args": ["worldanvil-mcp"],
+      "env": {
+        "WA_AUTH_TOKEN": "your-auth-token"
+      }
+    }
+  }
+}
+```
+
+### npm (Direct)
+
+```bash
+npx worldanvil-mcp
+```
+
+Or install globally:
+```bash
+npm install -g worldanvil-mcp
 ```
 
 ## Setup
 
 1. Get your **Auth Token** from https://www.worldanvil.com/api/auth/key
-2. Set the environment variable:
-   ```bash
-   export WA_AUTH_TOKEN="your-auth-token"
-   ```
+2. Configure your AI tool with the token (see installation above)
 
-That's it! The plugin uses a public proxy so you don't need an App Key.
+That's it! The MCP uses a public proxy so you don't need an Application Key.
 
 ## Features
 
